@@ -1,0 +1,4 @@
+repository "DBZTempleRun_VJ@unity_BBFF215E8FACDE1EEE9D@cloud"
+  path "/"
+    br "/main"
+    co "/main"
