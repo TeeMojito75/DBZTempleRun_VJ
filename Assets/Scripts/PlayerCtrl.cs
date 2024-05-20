@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -9,37 +11,52 @@ public class PlayerMove : MonoBehaviour
     private Vector3 targetPosition;
     public float forwardSpeed;
 
-    private int desiredLane = 1; // 0: left, 1: middle, 2: right
-    public float laneDistance = 4; // Distance between 2 lanes
-    public float laneChangeSpeed = 10f; // Speed of lane change
+    private int desiredLane = 1; 
+    public float laneDistance = 4; 
+    public float laneChangeSpeed = 10f;
+
+    public float jumpForce;
+    public float gravity;
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
-        targetPosition = transform.position;
     }
 
     void Update()
     {
-        // Set forward direction
+        //Moviment frontal
         direction.z = forwardSpeed;
 
-        // Gather the inputs on which lane we should be
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (controller.isGrounded) //controla que només botem desde enterra
+        {   
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                Jump();
+            }
+        }
+        else
+        {
+            direction.y += gravity * Time.deltaTime;
+
+        }
+
+        // Moviment lateral
+        if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             desiredLane++;
             if (desiredLane > 2)
                 desiredLane = 2;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             desiredLane--;
             if (desiredLane < 0)
                 desiredLane = 0;
         }
 
-        // Calculate the target position based on the desired lane
+        // Calcula la següent posició del personatge
         Vector3 newTargetPosition = transform.position.z * transform.forward + transform.position.y * transform.up;
 
         if (desiredLane == 0)
@@ -55,14 +72,19 @@ public class PlayerMove : MonoBehaviour
             newTargetPosition += Vector3.right * laneDistance;
         }
 
-        // Smoothly move the character towards the target position in the x direction
+        // Mou el personatge a la posició que s'ha calculat anteriorment
         targetPosition = Vector3.Lerp(transform.position, new Vector3(newTargetPosition.x, transform.position.y, transform.position.z), laneChangeSpeed * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        // Combine forward movement with lateral movement
-        Vector3 move = new Vector3(targetPosition.x - transform.position.x, 0, direction.z * Time.fixedDeltaTime);
+        //Aplica els canvis de moviment al jugador
+        Vector3 move = new Vector3(targetPosition.x - transform.position.x, direction.y, direction.z * Time.fixedDeltaTime);
         controller.Move(move);
+    }
+
+    private void Jump()
+    {
+        direction.y = jumpForce;
     }
 }
