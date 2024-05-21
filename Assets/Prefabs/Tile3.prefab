@@ -591,7 +591,7 @@ GameObject:
   - component: {fileID: 443139918698256745}
   m_Layer: 0
   m_Name: DBFZ_Menu_Lobby_Avatar_SBN_SAIBAMAN_DAE
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2127,7 +2127,7 @@ GameObject:
   - component: {fileID: 2034013923872492131}
   m_Layer: 0
   m_Name: DBFZ_Menu_Lobby_Avatar_SBN_SAIBAMAN_DAE (1)
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

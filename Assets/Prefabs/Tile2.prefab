@@ -351,6 +351,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DBFZ_Menu_Lobby_Avatar_SBN_SAIBAMAN_DAE
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 58c136796c15b5a4e90c10295ac0a9e5, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
+      objectReference: {fileID: 0}
     - target: {fileID: 3754233209232175627, guid: 58c136796c15b5a4e90c10295ac0a9e5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -457,6 +461,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 58c136796c15b5a4e90c10295ac0a9e5, type: 3}
       propertyPath: m_Name
       value: DBFZ_Menu_Lobby_Avatar_SBN_SAIBAMAN_DAE (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 58c136796c15b5a4e90c10295ac0a9e5, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 3754233209232175627, guid: 58c136796c15b5a4e90c10295ac0a9e5, type: 3}
       propertyPath: m_Materials.Array.data[0]

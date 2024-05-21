@@ -8,6 +8,7 @@ public class PlayerMove : MonoBehaviour
 {
     private CharacterController controller;
     private Vector3 direction;
+    public float maxSpeed;
     private Vector3 targetPosition;
     public float forwardSpeed;
 
@@ -25,10 +26,16 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        if (!PlayerManager.isGameStarted)
+        {
+            return;
+        }
+        if (forwardSpeed < maxSpeed)
+            forwardSpeed += 0.1f * Time.deltaTime;
         //Moviment frontal
         direction.z = forwardSpeed;
 
-        if (controller.isGrounded) //controla que només botem desde enterra
+        if (controller.isGrounded) //controla que nomï¿½s botem desde enterra
         {   
             if (Input.GetKeyUp(KeyCode.UpArrow))
             {
@@ -56,7 +63,7 @@ public class PlayerMove : MonoBehaviour
                 desiredLane = 0;
         }
 
-        // Calcula la següent posició del personatge
+        // Calcula la segï¿½ent posiciï¿½ del personatge
         Vector3 newTargetPosition = transform.position.z * transform.forward + transform.position.y * transform.up;
 
         if (desiredLane == 0)
@@ -72,12 +79,16 @@ public class PlayerMove : MonoBehaviour
             newTargetPosition += Vector3.right * laneDistance;
         }
 
-        // Mou el personatge a la posició que s'ha calculat anteriorment
+        // Mou el personatge a la posiciï¿½ que s'ha calculat anteriorment
         targetPosition = Vector3.Lerp(transform.position, new Vector3(newTargetPosition.x, transform.position.y, transform.position.z), laneChangeSpeed * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
+        if (!PlayerManager.isGameStarted)
+        {
+            return;
+        }
         //Aplica els canvis de moviment al jugador
         Vector3 move = new Vector3(targetPosition.x - transform.position.x, direction.y, direction.z * Time.fixedDeltaTime);
         controller.Move(move);
@@ -86,5 +97,14 @@ public class PlayerMove : MonoBehaviour
     private void Jump()
     {
         direction.y = jumpForce;
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.transform.tag == "Obstacle")
+        {
+            PlayerManager.gameOver = true;
+            FindObjectOfType<AudioManager>().Play("GameOver");
+        }
     }
 }
