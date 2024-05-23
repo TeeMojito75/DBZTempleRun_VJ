@@ -6,6 +6,7 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
     // Start is called before the first frame update
+    public string Sname;
     void Start()
     {
         foreach (Sound s in sounds)
@@ -15,8 +16,7 @@ public class AudioManager : MonoBehaviour
             s.source.volume = s.volume;
             s.source.loop = s.loop;
         }
-
-        Play("MainTheme");
+        Play(Sname);
     }
 
     public void Play(string name)

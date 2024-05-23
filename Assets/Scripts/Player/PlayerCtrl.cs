@@ -19,6 +19,8 @@ public class PlayerMove : MonoBehaviour
     public float jumpForce;
     public float gravity;
 
+    public Animator animator;
+
     private void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -30,11 +32,17 @@ public class PlayerMove : MonoBehaviour
         {
             return;
         }
+
+        animator.SetBool("isGameStarted", true);
+
+        //Increment de la velocitat
         if (forwardSpeed < maxSpeed)
-            forwardSpeed += 0.1f * Time.deltaTime;
+            forwardSpeed += 0.25f * Time.deltaTime;
         //Moviment frontal
         direction.z = forwardSpeed;
 
+        animator.SetBool("isGrounded", controller.isGrounded);
+        //Controlador salts
         if (controller.isGrounded) //controla que nom�s botem desde enterra
         {   
             if (Input.GetKeyUp(KeyCode.UpArrow))
@@ -48,6 +56,12 @@ public class PlayerMove : MonoBehaviour
 
         }
 
+        //Controlador lliscaments
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            StartCoroutine(Slide());
+        }
+        
         // Moviment lateral
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
@@ -89,14 +103,37 @@ public class PlayerMove : MonoBehaviour
         {
             return;
         }
-        //Aplica els canvis de moviment al jugador
-        Vector3 move = new Vector3(targetPosition.x - transform.position.x, direction.y, direction.z * Time.fixedDeltaTime);
+
+        // Calcula la posición objetivo del carril
+        Vector3 targetLanePosition = new Vector3(targetPosition.x, transform.position.y, transform.position.z);
+
+        // Interpola suavemente hacia la posición objetivo del carril
+        float interpolationFactor = laneChangeSpeed * Time.fixedDeltaTime;
+        float newX = Mathf.Lerp(transform.position.x, targetLanePosition.x, interpolationFactor);
+
+        // Crea el vector de movimiento
+        Vector3 move = new Vector3(newX - transform.position.x, direction.y * Time.fixedDeltaTime, direction.z * Time.fixedDeltaTime);
+
+        // Aplica el movimiento lateral y hacia adelante
         controller.Move(move);
+
+        // Aplica el movimiento vertical después de mover lateralmente y hacia adelante
+        controller.Move(new Vector3(0, direction.y * Time.fixedDeltaTime, 0));
     }
 
     private void Jump()
     {
         direction.y = jumpForce;
+    }
+    private IEnumerator Slide()
+    {
+        animator.SetBool("isSliding", true);
+        controller.center = new Vector3(0, -1.35f, 0);
+        controller.height = 1f;
+        yield return new WaitForSeconds(1.3f);
+        controller.center = new Vector3(0, -1.1f, 0);
+        controller.height = 2f;
+        animator.SetBool("isSliding", false);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
